@@ -1,4 +1,3 @@
-import React from 'react';
 import { Line } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
@@ -11,10 +10,6 @@ import {
     Legend,
 } from 'chart.js';
 const PriceProgressionChart = ({ searchResult }) => {
-    // Extrair os valores e os meses de referência do resultado da pesquisa
-    const valores = searchResult.map(item => parseFloat(item.Valor.replace('R$ ', '').replace('.', '').replace(',', '.')));
-    const mesesReferencia = searchResult.map(item => item.MesReferencia);
-
     ChartJS.register(
         CategoryScale,
         LinearScale,
@@ -24,26 +19,46 @@ const PriceProgressionChart = ({ searchResult }) => {
         Tooltip,
         Legend
     );
-    console.log('valores', valores);
-    console.log('mesesReferencia', mesesReferencia);
-    const data = {
-        labels: mesesReferencia,
-        datasets: [
-            {
-                label: 'Preço (R$)',
-                data: valores,
-                fill: false,
-                borderColor: 'rgb(75, 192, 192)',
-                tension: 0.1,
-            },
-        ],
-    };
+    let data;
+    if (searchResult) {
+        const valores = searchResult.map(item => parseFloat(item.Valor.replace('R$ ', '').replace('.', '').replace(',', '.')));
+        const mesesReferencia = searchResult.map(item => item.MesReferencia);
+        data = {
+            labels: mesesReferencia,
+            datasets: [
+                {
+                    label: 'Preço (R$)',
+                    data: valores,
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1,
+                    pointRadius: 7,
+                },
+            ],
+        };
+    } else {
+        data = {
+            labels: [],
+            datasets: [
+                {
+                    label: 'Preço (R$)',
+                    data: [],
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1,
+                    pointRadius: 7,
+                },
+            ],
+        };
+
+    }
+
 
     return (
-        <div>
-            <h2>Progressão/Regressão de Preços</h2>
+        <>
+            <h2>Histórico de Preços FIPE</h2>
             <Line data={data} />
-        </div>
+        </>
     );
 };
 

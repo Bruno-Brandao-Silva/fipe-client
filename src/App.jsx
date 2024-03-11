@@ -18,6 +18,8 @@ function App() {
   const [selectedYear, setSelectedYear] = useState(null);
   const [searchResult, setSearchResult] = useState(null);
 
+  const [progress, setProgress] = useState(-1);
+
   const typeOptions = [
     { value: 1, label: 'Carro' },
     { value: 2, label: 'Moto' },
@@ -101,6 +103,7 @@ function App() {
   const handleConsult = async () => {
     let result = [];
     for (let i = selectedReferenceStart.value; i <= selectedReferenceEnd.value; i++) {
+      setProgress((i - selectedReferenceStart.value) * 100 / (selectedReferenceEnd.value - selectedReferenceStart.value));
       let response = await axios.postForm('https://veiculos.fipe.org.br/api/veiculos/ConsultarValorComTodosParametros', {
         codigoTabelaReferencia: i,
         codigoTipoVeiculo: selectedTypeOpt.value,
@@ -113,49 +116,72 @@ function App() {
       });
       if (response.data.Valor) result.push(response.data);
     }
+
+    setProgress(-1);
     setSearchResult(result);
   }
   return (
     <>
-      <Select
-        defaultValue={selectedReferenceStart}
-        onChange={setSelectedReferenceStart}
-        options={referenceTableStart}
-        isDisabled={!referenceTableStart}
-      />
-      <Select
-        defaultValue={selectedReferenceEnd}
-        onChange={setSelectedReferenceEnd}
-        options={referenceTableEnd}
-        isDisabled={!referenceTableEnd}
-      />
-      <Select
-        defaultValue={selectedTypeOpt}
-        onChange={setSelectedTypeOpt}
-        options={typeOptions}
-        isDisabled={!referenceTableStart}
-      />
-      <Select
-        defaultValue={selectedBrand}
-        onChange={setSelectedBrand}
-        options={brands}
-        isDisabled={!brands}
-      />
-      <Select
-        defaultValue={selectedModel}
-        onChange={setSelectedModel}
-        options={models}
-        isDisabled={!models}
-      />
-      <Select
-        defaultValue={selectedYear}
-        onChange={setSelectedYear}
-        options={years}
-        isDisabled={!years}
-      />
-      <button onClick={handleConsult}>Consultar</button>
-      <div>
-        {searchResult && <PriceProgressionChart searchResult={searchResult} />}
+      <div className='form'>
+        <Select
+          className="select"
+          defaultValue={selectedReferenceStart}
+          placeholder="Data Inicial"
+          onChange={setSelectedReferenceStart}
+          options={referenceTableStart}
+          isDisabled={!referenceTableStart}
+        />
+        <Select
+          className="select"
+          defaultValue={selectedReferenceEnd}
+          placeholder="Data Final"
+          onChange={setSelectedReferenceEnd}
+          options={referenceTableEnd}
+          isDisabled={!referenceTableEnd}
+        />
+        <Select
+          className="select"
+          defaultValue={selectedTypeOpt}
+          placeholder="Tipo de Veículo"
+          onChange={setSelectedTypeOpt}
+          options={typeOptions}
+          isDisabled={!referenceTableStart}
+        />
+        <Select
+          className="select"
+          defaultValue={selectedBrand}
+          placeholder="Selecione a Marca"
+          onChange={setSelectedBrand}
+          options={brands}
+          isDisabled={!brands}
+        />
+        <Select
+          className="select"
+          defaultValue={selectedModel}
+          placeholder="Selecione o Modelo"
+          onChange={setSelectedModel}
+          options={models}
+          isDisabled={!models}
+        />
+        <Select
+          className="select"
+          defaultValue={selectedYear}
+          placeholder="Selecione o Ano/Combutível"
+          onChange={setSelectedYear}
+          options={years}
+          isDisabled={!years}
+        />
+      </div>
+      <button onClick={handleConsult}
+
+        disabled={!selectedReferenceStart || !selectedReferenceEnd || !selectedTypeOpt || !selectedBrand || !selectedModel || !selectedYear}
+      >Consultar</button>
+
+      <div className='progress-bar-container' style={{ display: progress >= 0 ? 'block' : 'none' }}>
+        <div className='progress-bar' style={{ width: `${progress}%` }} />
+      </div>
+      <div className='chart'>
+        <PriceProgressionChart searchResult={searchResult} />
       </div>
     </>
   )
