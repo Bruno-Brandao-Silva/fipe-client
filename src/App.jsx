@@ -19,7 +19,7 @@ function App() {
   const [searchResult, setSearchResult] = useState(null);
 
   const [progress, setProgress] = useState(-1);
-  const [buttonDisabled, setButtonDisabled] = useState(true);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
   const typeOptions = [
     { value: 1, label: 'Carro' },
     { value: 2, label: 'Moto' },
@@ -99,6 +99,7 @@ function App() {
       .catch((error) => {
         console.log('error', error);
       });
+
   }, [selectedModel, selectedBrand, selectedReferenceStart, selectedTypeOpt]);
 
   const handleConsult = async () => {
@@ -121,6 +122,7 @@ function App() {
 
     setProgress(-1);
     setSearchResult(result);
+    setButtonDisabled(false);
   }
 
   return (
