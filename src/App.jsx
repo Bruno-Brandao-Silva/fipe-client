@@ -19,7 +19,7 @@ function App() {
   const [searchResult, setSearchResult] = useState(null);
 
   const [progress, setProgress] = useState(-1);
-
+  const [buttonDisabled, setButtonDisabled] = useState(true);
   const typeOptions = [
     { value: 1, label: 'Carro' },
     { value: 2, label: 'Moto' },
@@ -38,6 +38,7 @@ function App() {
         console.log('error', error);
       });
   }, []);
+
   useEffect(() => {
     if (!selectedReferenceStart) return;
     setReferenceTableEnd(referenceTableStart.filter((item) => item.value > selectedReferenceStart.value));
@@ -101,6 +102,7 @@ function App() {
   }, [selectedModel, selectedBrand, selectedReferenceStart, selectedTypeOpt]);
 
   const handleConsult = async () => {
+    setButtonDisabled(true);
     let result = [];
     for (let i = selectedReferenceStart.value; i <= selectedReferenceEnd.value; i++) {
       setProgress((i - selectedReferenceStart.value) * 100 / (selectedReferenceEnd.value - selectedReferenceStart.value));
@@ -120,6 +122,7 @@ function App() {
     setProgress(-1);
     setSearchResult(result);
   }
+
   return (
     <>
       <div className='form'>
@@ -174,7 +177,7 @@ function App() {
       </div>
       <button onClick={handleConsult}
 
-        disabled={!selectedReferenceStart || !selectedReferenceEnd || !selectedTypeOpt || !selectedBrand || !selectedModel || !selectedYear}
+        disabled={buttonDisabled || !selectedReferenceStart || !selectedReferenceEnd || !selectedTypeOpt || !selectedBrand || !selectedModel || !selectedYear}
       >Consultar</button>
 
       <div className='progress-bar-container' style={{ display: progress >= 0 ? 'block' : 'none' }}>
