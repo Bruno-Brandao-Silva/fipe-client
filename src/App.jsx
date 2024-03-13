@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import './App.css'
+import { useEffect, useState } from 'react';
+import './App.css';
 import Select from 'react-select';
 import axios from 'axios';
 import PriceProgressionChart from './components/PriceProgressionChart';
@@ -104,25 +104,30 @@ function App() {
 
   const handleConsult = async () => {
     setButtonDisabled(true);
-    let result = [];
-    for (let i = selectedReferenceStart.value; i <= selectedReferenceEnd.value; i++) {
-      setProgress((i - selectedReferenceStart.value) * 100 / (selectedReferenceEnd.value - selectedReferenceStart.value));
-      let response = await axios.postForm('https://veiculos.fipe.org.br/api/veiculos/ConsultarValorComTodosParametros', {
-        codigoTabelaReferencia: i,
-        codigoTipoVeiculo: selectedTypeOpt.value,
-        codigoMarca: selectedBrand.value,
-        codigoModelo: selectedModel.value,
-        ano: selectedYear.value,
-        anoModelo: selectedYear.value.split('-')[0],
-        codigoTipoCombustivel: 1,
-        tipoConsulta: 'tradicional'
-      });
-      if (response.data.Valor) result.push(response.data);
-    }
+    try {
+      let result = [];
+      for (let i = selectedReferenceStart.value; i <= selectedReferenceEnd.value; i++) {
+        setProgress((i - selectedReferenceStart.value) * 100 / (selectedReferenceEnd.value - selectedReferenceStart.value));
+        let response = await axios.postForm('https://veiculos.fipe.org.br/api/veiculos/ConsultarValorComTodosParametros', {
+          codigoTabelaReferencia: i,
+          codigoTipoVeiculo: selectedTypeOpt.value,
+          codigoMarca: selectedBrand.value,
+          codigoModelo: selectedModel.value,
+          ano: selectedYear.value,
+          anoModelo: selectedYear.value.split('-')[0],
+          codigoTipoCombustivel: 1,
+          tipoConsulta: 'tradicional'
+        });
+        if (response.data.Valor) result.push(response.data);
+      }
 
-    setProgress(-1);
-    setSearchResult(result);
-    setButtonDisabled(false);
+      setSearchResult(result);
+    } catch (error) {
+      console.log('error', error);
+    } finally {
+      setProgress(-1);
+      setButtonDisabled(false);
+    }
   }
 
   return (
@@ -178,10 +183,8 @@ function App() {
         />
       </div>
       <button onClick={handleConsult}
-
         disabled={buttonDisabled || !selectedReferenceStart || !selectedReferenceEnd || !selectedTypeOpt || !selectedBrand || !selectedModel || !selectedYear}
       >Consultar</button>
-
       <div className='progress-bar-container' style={{ display: progress >= 0 ? 'block' : 'none' }}>
         <div className='progress-bar' style={{ width: `${progress}%` }} />
       </div>
@@ -189,7 +192,7 @@ function App() {
         <PriceProgressionChart searchResult={searchResult} />
       </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

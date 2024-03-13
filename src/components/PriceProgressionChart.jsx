@@ -9,17 +9,32 @@ import {
     Tooltip,
     Legend,
 } from 'chart.js';
+
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend
+);
+
 const PriceProgressionChart = ({ searchResult }) => {
-    ChartJS.register(
-        CategoryScale,
-        LinearScale,
-        PointElement,
-        LineElement,
-        Title,
-        Tooltip,
-        Legend
-    );
-    let data;
+    let data = {
+        labels: [],
+        datasets: [
+            {
+                label: 'Preço (R$)',
+                data: [],
+                fill: false,
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1,
+                pointRadius: 7,
+            },
+        ],
+    };
+
     if (searchResult) {
         const valores = searchResult.map(item => parseFloat(item.Valor.replace('R$ ', '').replace('.', '').replace(',', '.')));
         const mesesReferencia = searchResult.map(item => item.MesReferencia);
@@ -36,23 +51,7 @@ const PriceProgressionChart = ({ searchResult }) => {
                 },
             ],
         };
-    } else {
-        data = {
-            labels: [],
-            datasets: [
-                {
-                    label: 'Preço (R$)',
-                    data: [],
-                    fill: false,
-                    borderColor: 'rgb(75, 192, 192)',
-                    tension: 0.1,
-                    pointRadius: 7,
-                },
-            ],
-        };
-
     }
-
 
     return (
         <>
