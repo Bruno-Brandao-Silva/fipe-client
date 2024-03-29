@@ -144,64 +144,79 @@ function App() {
   };
 
   return (
-    <>
-      <div className='form'>
-        <Select
-          className="select"
-          defaultValue={selectedReferenceStart}
-          placeholder="Data Inicial"
-          onChange={setSelectedReferenceStart}
-          options={referenceTableStart}
-          isDisabled={!referenceTableStart}
-        />
-        <Select
-          className="select"
-          defaultValue={selectedReferenceEnd}
-          placeholder="Data Final"
-          onChange={setSelectedReferenceEnd}
-          options={referenceTableEnd}
-          isDisabled={!referenceTableEnd}
-        />
-        <Select
-          className="select"
-          defaultValue={selectedTypeOpt}
-          placeholder="Tipo de Veículo"
-          onChange={setSelectedTypeOpt}
-          options={typeOptions}
-          isDisabled={!referenceTableStart}
-        />
-        <Select
-          className="select"
-          defaultValue={selectedBrand}
-          placeholder="Selecione a Marca"
-          onChange={setSelectedBrand}
-          options={brands}
-          isDisabled={!brands}
-        />
-        <Select
-          className="select"
-          defaultValue={selectedModel}
-          placeholder="Selecione o Modelo"
-          onChange={setSelectedModel}
-          options={models}
-          isDisabled={!models}
-        />
-        <Select
-          className="select"
-          defaultValue={selectedYear}
-          placeholder="Selecione o Ano/Combutível"
-          onChange={setSelectedYear}
-          options={years}
-          isDisabled={!years}
-        />
+    <div className='content'>
+      <div className="left-side">
+        <header>
+          <h1>Histórico de Preços FIPE</h1>
+        </header>
+        <div className='search'>
+          <Select
+            className="select"
+            defaultValue={selectedReferenceStart}
+            placeholder="Data Inicial"
+            onChange={setSelectedReferenceStart}
+            options={referenceTableStart}
+            isDisabled={!referenceTableStart}
+          />
+          <Select
+            className="select"
+            defaultValue={selectedReferenceEnd}
+            placeholder="Data Final"
+            onChange={setSelectedReferenceEnd}
+            options={referenceTableEnd}
+            isDisabled={!referenceTableEnd}
+          />
+          <Select
+            className="select"
+            defaultValue={selectedTypeOpt}
+            placeholder="Tipo de Veículo"
+            onChange={setSelectedTypeOpt}
+            options={typeOptions}
+            isDisabled={!referenceTableStart}
+          />
+          <Select
+            className="select"
+            defaultValue={selectedBrand}
+            placeholder="Selecione a Marca"
+            onChange={setSelectedBrand}
+            options={brands}
+            isDisabled={!brands}
+          />
+          <Select
+            className="select"
+            defaultValue={selectedModel}
+            placeholder="Selecione o Modelo"
+            onChange={setSelectedModel}
+            options={models}
+            isDisabled={!models}
+          />
+          <Select
+            className="select"
+            defaultValue={selectedYear}
+            placeholder="Selecione o Ano/Combutível"
+            onChange={setSelectedYear}
+            options={years}
+            isDisabled={!years}
+          />
+        </div>
+        <div className="buttons-container">
+          <button onClick={handleConsult}
+            disabled={buttonDisabled || !selectedReferenceStart || !selectedReferenceEnd || !selectedTypeOpt || !selectedBrand || !selectedModel || !selectedYear}
+          >Adicionar</button>
+          <button>
+            Limpar
+          </button>
+        </div>
+        <footer>
+          <a href="https://github.com/Bruno-Brandao-Silva">
+            @Bruno
+          </a>
+        </footer>
       </div>
-      <button onClick={handleConsult}
-        disabled={buttonDisabled || !selectedReferenceStart || !selectedReferenceEnd || !selectedTypeOpt || !selectedBrand || !selectedModel || !selectedYear}
-      >Consultar</button>
-      <div className='chart'>
+      <div className='right-side'>
         <PriceProgressionChart searchResult={searchResult} />
       </div>
-    </>
+    </div>
   );
 }
 

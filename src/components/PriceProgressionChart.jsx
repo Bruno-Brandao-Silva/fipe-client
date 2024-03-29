@@ -25,7 +25,7 @@ const PriceProgressionChart = ({ searchResult }) => {
         labels: [],
         datasets: [
             {
-                label: 'Preço (R$)',
+                label: '',
                 data: [],
                 fill: false,
                 borderColor: 'rgb(75, 192, 192)',
@@ -42,7 +42,7 @@ const PriceProgressionChart = ({ searchResult }) => {
             labels: mesesReferencia,
             datasets: [
                 {
-                    label: 'Preço (R$)',
+                    label: searchResult[0].Marca + ' ' + searchResult[0].Modelo + ' ' + searchResult[0].AnoModelo,
                     data: valores,
                     fill: false,
                     borderColor: 'rgb(75, 192, 192)',
@@ -55,7 +55,6 @@ const PriceProgressionChart = ({ searchResult }) => {
 
     return (
         <>
-            <h2>Histórico de Preços FIPE</h2>
             <Line data={data} />
         </>
     );

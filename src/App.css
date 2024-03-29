@@ -1,52 +1,117 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  text-align: center;
+.content {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+.left-side {
+    width: 29vw;
+    background-color: rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    padding: 0 3rem;
+}
+
+header {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 2rem 0;
+    margin-bottom: 1em;
+}
+
+
+header>h1 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 500;
+    color: #e6e6e6;
+}
+
+.search {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    row-gap: 1rem;
 }
 
 .select {
-  color: #222;
-  width: 200px;
-  min-width: 200px;
+    width: 100%;
+    border: 1px solid transparent;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #1a1a1a;
+    cursor: pointer;
+    text-align: center;
 }
 
 
-.select:nth-last-of-type(2) {
-  width: calc(100% - 260px - 2rem);
-  min-width: 320px;
+.buttons-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 2rem;
 }
 
-.select:nth-last-of-type(1) {
-  min-width: 260px;
+footer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #e6e6e6;
 }
 
-.form {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 2rem 10rem 1rem 10rem;
-  flex-wrap: wrap;
-  row-gap: 1rem;
-  gap: 1rem;
+footer a {
+    color: #e6e6e6;
+    text-decoration: none;
+    text-align: center;
+    margin-top: 5rem;
 }
 
-.progress-bar-container {
-  width: 50%;
-  background-color: #f0f0f0;
-  height: 10px;
-  border-radius: 4px;
-  margin: auto;
-  margin-top: 10px;
+footer a:hover,
+footer a:active {
+    color: #646cff;
 }
 
-.progress-bar {
-  height: 100%;
-  border-radius: 4px;
-  background-color: #007bff;
-  transition: all 0.2s linear;
+footer a>img {
+    color: unset;
 }
 
-.chart {
-  width: 65%;
-  margin: auto;
+.right-side {
+    width: 71vw;
+    padding: 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+button {
+    border-radius: 8px;
+    border: 1px solid #979797;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: #1a1a1a;
+    cursor: pointer;
+    transition: border-color 0.25s;
+}
+
+button:not(:disabled):hover {
+    border-color: #646cff;
+}
+
+button:focus,
+button:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
+}
+
+
+@media (prefers-color-scheme: light) {
+    header>h1 {
+        color: #213547;
+    }
 }
