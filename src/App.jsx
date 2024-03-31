@@ -214,8 +214,8 @@ function App() {
           />
         </div>
         <div className="buttons-container">
-          <button onClick={handleConsult} disabled={buttonDisabled || !selectedReferenceStart || !selectedReferenceEnd || !selectedTypeOpt || !selectedBrand || !selectedModel || !selectedYear}>Adicionar</button>
           <button onClick={handleClean}>Limpar</button>
+          <button onClick={handleConsult} disabled={buttonDisabled || !selectedReferenceStart || !selectedReferenceEnd || !selectedTypeOpt || !selectedBrand || !selectedModel || !selectedYear}>Adicionar</button>
         </div>
         <footer>
           <a href="https://github.com/Bruno-Brandao-Silva">
