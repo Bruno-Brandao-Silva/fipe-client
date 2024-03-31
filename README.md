@@ -1,6 +1,8 @@
 # Fipe Client
 
 Este é um projeto desenvolvido utilizando Vite (ReactJS) para obter e visualizar dados da Tabela FIPE. Ele permite ao usuário selecionar o tipo de veículo, marca, modelo e ano/combustível desejados, exibindo um gráfico de tempo x preço com base nos dados fornecidos pela API da FIPE.
+![Captura de tela 2024-03-30 214302](https://github.com/Bruno-Brandao-Silva/fipe-client/assets/72681281/b6bdb542-ecb6-4ebc-ae9a-fa1827154937)
+![Captura de tela 2024-03-30 214122](https://github.com/Bruno-Brandao-Silva/fipe-client/assets/72681281/3a7104a8-4ca6-4d1a-91d4-2c3893a8dbe6)
 
 ## Acesso ao Projeto
 
