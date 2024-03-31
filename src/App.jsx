@@ -35,9 +35,6 @@ function App() {
         });
         setReferenceTableStart(data);
       })
-      .catch((error) => {
-        console.log('error', error);
-      });
   }, []);
 
   useEffect(() => {
@@ -58,9 +55,6 @@ function App() {
         });
         setBrands(data);
       })
-      .catch((error) => {
-        console.log('error', error);
-      });
   }, [selectedReferenceStart, selectedTypeOpt]);
 
   useEffect(() => {
@@ -77,9 +71,6 @@ function App() {
         });
         setModels(data);
       })
-      .catch((error) => {
-        console.log('error', error);
-      });
   }, [selectedBrand, selectedReferenceStart, selectedTypeOpt]);
 
   useEffect(() => {
@@ -97,9 +88,6 @@ function App() {
         });
         setYears(data);
       })
-      .catch((error) => {
-        console.log('error', error);
-      });
 
   }, [selectedModel, selectedBrand, selectedReferenceStart, selectedTypeOpt]);
 
@@ -140,8 +128,6 @@ function App() {
             }
             delete value.data.CodigoFipe;
             accumulatedResults[codigoFipe].push(info);
-          } else {
-            console.log('error', value.data);
           }
         }
         return accumulatedResults;
@@ -156,8 +142,6 @@ function App() {
         newSearchResult.push(result[key]);
       }
       setSearchResult(newSearchResult);
-    } catch (error) {
-      console.log('error', error);
     } finally {
       setButtonDisabled(false);
     }
