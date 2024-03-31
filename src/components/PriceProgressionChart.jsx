@@ -20,6 +20,7 @@ ChartJS.register(
     Legend
 );
 
+
 const PriceProgressionChart = ({ searchResult }) => {
     let data = {
         labels: [],
@@ -34,25 +35,23 @@ const PriceProgressionChart = ({ searchResult }) => {
             },
         ],
     };
-
     if (searchResult) {
-        const valores = searchResult.map(item => parseFloat(item.Valor.replace('R$ ', '').replace('.', '').replace(',', '.')));
-        const mesesReferencia = searchResult.map(item => item.MesReferencia);
-        data = {
-            labels: mesesReferencia,
-            datasets: [
-                {
-                    label: searchResult[0].Marca + ' ' + searchResult[0].Modelo + ' ' + searchResult[0].AnoModelo,
-                    data: valores,
-                    fill: false,
-                    borderColor: 'rgb(75, 192, 192)',
-                    tension: 0.1,
-                    pointRadius: 7,
-                },
-            ],
-        };
+        let datasets = [];
+        searchResult.forEach((sr) => {
+            const valores = sr.map(item => item.Valor);
+            const mesesReferencia = sr.map(item => item.MesReferencia);
+            data.labels = mesesReferencia;
+            datasets.push({
+                label: sr[0].Marca + ' ' + sr[0].Modelo + ' ' + sr[0].AnoModelo,
+                data: valores,
+                fill: false,
+                borderColor: `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`,
+                tension: 0.1,
+                pointRadius: 7,
+            });
+        });
+        data.datasets = datasets;
     }
-
     return (
         <>
             <Line data={data} />

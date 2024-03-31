@@ -104,12 +104,6 @@ button:not(:disabled):hover {
     border-color: #646cff;
 }
 
-button:focus,
-button:focus-visible {
-    outline: 4px auto -webkit-focus-ring-color;
-}
-
-
 @media (prefers-color-scheme: light) {
     header>h1 {
         color: #213547;

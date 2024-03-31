@@ -106,6 +106,13 @@ function App() {
   const handleConsult = async () => {
     setButtonDisabled(true);
     try {
+      if (searchResult) {
+        for (let i = 0; i < searchResult.length; i++) {
+          if (searchResult[i][0].Marca === selectedBrand.label && searchResult[i][0].Modelo === selectedModel.label && searchResult[i][0].AnoModelo == selectedYear.value.split('-')[0]) {
+            return;
+          }
+        }
+      }
       const resultPromises = [];
       for (let i = selectedReferenceStart.value; i <= selectedReferenceEnd.value; i++) {
         resultPromises.push(
@@ -122,20 +129,33 @@ function App() {
         );
       }
       const responses = await Promise.allSettled(resultPromises);
-      console.log('responses', responses);
       const result = responses.reduce((accumulatedResults, { status, value }) => {
-        if (status === 'fulfilled'
-          && value
-          && value.data) {
-          if (value.data.Valor)
-            accumulatedResults.push(value.data);
-          else
+        if (status === 'fulfilled' && value && value.data) {
+          if (value.data.CodigoFipe) {
+            let info = value.data;
+            info.Valor = parseFloat(info.Valor.replace('R$ ', '').replace('.', '').replace(',', '.'));
+            const codigoFipe = value.data.CodigoFipe;
+            if (!accumulatedResults[codigoFipe]) {
+              accumulatedResults[codigoFipe] = [];
+            }
+            delete value.data.CodigoFipe;
+            accumulatedResults[codigoFipe].push(info);
+          } else {
             console.log('error', value.data);
+          }
         }
         return accumulatedResults;
-      }, []);
+      }, {});
 
-      setSearchResult(result);
+      if (result[Object.keys(result)[0]] === 0) {
+        return;
+      }
+
+      let newSearchResult = searchResult || [];
+      for (let key in result) {
+        newSearchResult.push(result[key]);
+      }
+      setSearchResult(newSearchResult);
     } catch (error) {
       console.log('error', error);
     } finally {
@@ -143,6 +163,15 @@ function App() {
     }
   };
 
+  const handleClean = () => {
+    setSelectedReferenceStart(null);
+    setSelectedReferenceEnd(null);
+    setSelectedTypeOpt(null);
+    setSelectedBrand(null);
+    setSelectedModel(null);
+    setSelectedYear(null);
+    setSearchResult(null);
+  }
   return (
     <div className='content'>
       <div className="left-side">
@@ -152,7 +181,7 @@ function App() {
         <div className='search'>
           <Select
             className="select"
-            defaultValue={selectedReferenceStart}
+            value={selectedReferenceStart}
             placeholder="Data Inicial"
             onChange={setSelectedReferenceStart}
             options={referenceTableStart}
@@ -160,7 +189,7 @@ function App() {
           />
           <Select
             className="select"
-            defaultValue={selectedReferenceEnd}
+            value={selectedReferenceEnd}
             placeholder="Data Final"
             onChange={setSelectedReferenceEnd}
             options={referenceTableEnd}
@@ -168,7 +197,7 @@ function App() {
           />
           <Select
             className="select"
-            defaultValue={selectedTypeOpt}
+            value={selectedTypeOpt}
             placeholder="Tipo de Veículo"
             onChange={setSelectedTypeOpt}
             options={typeOptions}
@@ -176,7 +205,7 @@ function App() {
           />
           <Select
             className="select"
-            defaultValue={selectedBrand}
+            value={selectedBrand}
             placeholder="Selecione a Marca"
             onChange={setSelectedBrand}
             options={brands}
@@ -184,7 +213,7 @@ function App() {
           />
           <Select
             className="select"
-            defaultValue={selectedModel}
+            value={selectedModel}
             placeholder="Selecione o Modelo"
             onChange={setSelectedModel}
             options={models}
@@ -192,7 +221,7 @@ function App() {
           />
           <Select
             className="select"
-            defaultValue={selectedYear}
+            value={selectedYear}
             placeholder="Selecione o Ano/Combutível"
             onChange={setSelectedYear}
             options={years}
@@ -203,7 +232,7 @@ function App() {
           <button onClick={handleConsult}
             disabled={buttonDisabled || !selectedReferenceStart || !selectedReferenceEnd || !selectedTypeOpt || !selectedBrand || !selectedModel || !selectedYear}
           >Adicionar</button>
-          <button>
+          <button onClick={handleClean}>
             Limpar
           </button>
         </div>
