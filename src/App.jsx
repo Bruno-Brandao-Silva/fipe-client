@@ -35,6 +35,9 @@ function App() {
         });
         setReferenceTableStart(data);
       })
+      .catch(error => {
+        console.error('Erro ao carregar tabela de referência inicial:', error);
+      });
   }, []);
 
   useEffect(() => {
@@ -55,6 +58,9 @@ function App() {
         });
         setBrands(data);
       })
+      .catch(error => {
+        console.error('Erro ao carregar marcas:', error);
+      });
   }, [selectedReferenceStart, selectedTypeOpt]);
 
   useEffect(() => {
@@ -71,6 +77,9 @@ function App() {
         });
         setModels(data);
       })
+      .catch(error => {
+        console.error('Erro ao carregar modelos:', error);
+      });
   }, [selectedBrand, selectedReferenceStart, selectedTypeOpt]);
 
   useEffect(() => {
@@ -88,60 +97,51 @@ function App() {
         });
         setYears(data);
       })
-
+      .catch(error => {
+        console.error('Erro ao carregar anos/modelos:', error);
+      });
   }, [selectedModel, selectedBrand, selectedReferenceStart, selectedTypeOpt]);
 
   const handleConsult = async () => {
     setButtonDisabled(true);
     try {
-      if (searchResult) {
-        for (let i = 0; i < searchResult.length; i++) {
-          if (searchResult[i][0].Marca === selectedBrand.label && searchResult[i][0].Modelo === selectedModel.label && searchResult[i][0].AnoModelo == selectedYear.value.split('-')[0]) {
-            return;
-          }
-        }
+      if (searchResult && searchResult.some(result => result[0].Marca === selectedBrand.label && result[0].Modelo === selectedModel.label && result[0].AnoModelo === selectedYear.value.split('-')[0])) {
+        return;
       }
-      const resultPromises = [];
-      for (let i = selectedReferenceStart.value; i <= selectedReferenceEnd.value; i++) {
-        resultPromises.push(
-          axios.postForm('https://veiculos.fipe.org.br/api/veiculos/ConsultarValorComTodosParametros', {
-            codigoTabelaReferencia: i,
-            codigoTipoVeiculo: selectedTypeOpt.value,
-            codigoMarca: selectedBrand.value,
-            codigoModelo: selectedModel.value,
-            ano: selectedYear.value,
-            anoModelo: selectedYear.value.split('-')[0],
-            codigoTipoCombustivel: 1,
-            tipoConsulta: 'tradicional'
-          })
-        );
-      }
+
+      const resultPromises = Array.from({ length: selectedReferenceEnd.value - selectedReferenceStart.value + 1 }, (_, index) =>
+        axios.postForm('https://veiculos.fipe.org.br/api/veiculos/ConsultarValorComTodosParametros', {
+          codigoTabelaReferencia: selectedReferenceStart.value + index,
+          codigoTipoVeiculo: selectedTypeOpt.value,
+          codigoMarca: selectedBrand.value,
+          codigoModelo: selectedModel.value,
+          ano: selectedYear.value,
+          anoModelo: selectedYear.value.split('-')[0],
+          codigoTipoCombustivel: 1,
+          tipoConsulta: 'tradicional'
+        })
+      );
+
       const responses = await Promise.allSettled(resultPromises);
       const result = responses.reduce((accumulatedResults, { status, value }) => {
-        if (status === 'fulfilled' && value && value.data) {
-          if (value.data.CodigoFipe) {
-            let info = value.data;
-            info.Valor = parseFloat(info.Valor.replace('R$ ', '').replace('.', '').replace(',', '.'));
-            const codigoFipe = value.data.CodigoFipe;
-            if (!accumulatedResults[codigoFipe]) {
-              accumulatedResults[codigoFipe] = [];
-            }
-            delete value.data.CodigoFipe;
-            accumulatedResults[codigoFipe].push(info);
+        if (status === 'fulfilled' && value && value.data && value.data.CodigoFipe) {
+          let info = value.data;
+          info.Valor = parseFloat(info.Valor.replace('R$ ', '').replace('.', '').replace(',', '.'));
+          const codigoFipe = value.data.CodigoFipe;
+          if (!accumulatedResults[codigoFipe]) {
+            accumulatedResults[codigoFipe] = [];
           }
+          delete value.data.CodigoFipe;
+          accumulatedResults[codigoFipe].push(info);
         }
         return accumulatedResults;
       }, {});
 
-      if (result[Object.keys(result)[0]] === 0) {
+      if (Object.keys(result).length === 0) {
         return;
       }
 
-      let newSearchResult = searchResult || [];
-      for (let key in result) {
-        newSearchResult.push(result[key]);
-      }
-      setSearchResult(newSearchResult);
+      setSearchResult(prevSearchResult => [...(prevSearchResult || []), ...Object.values(result)]);
     } finally {
       setButtonDisabled(false);
     }
@@ -155,7 +155,8 @@ function App() {
     setSelectedModel(null);
     setSelectedYear(null);
     setSearchResult(null);
-  }
+  };
+
   return (
     <div className='content'>
       <div className="left-side">
@@ -213,12 +214,8 @@ function App() {
           />
         </div>
         <div className="buttons-container">
-          <button onClick={handleConsult}
-            disabled={buttonDisabled || !selectedReferenceStart || !selectedReferenceEnd || !selectedTypeOpt || !selectedBrand || !selectedModel || !selectedYear}
-          >Adicionar</button>
-          <button onClick={handleClean}>
-            Limpar
-          </button>
+          <button onClick={handleConsult} disabled={buttonDisabled || !selectedReferenceStart || !selectedReferenceEnd || !selectedTypeOpt || !selectedBrand || !selectedModel || !selectedYear}>Adicionar</button>
+          <button onClick={handleClean}>Limpar</button>
         </div>
         <footer>
           <a href="https://github.com/Bruno-Brandao-Silva">
